@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="hello">Hello World!</string>
+    <string name="skip">skip</string>
+    <string name="next" >Next</string>
+    <string name="Далее">Далее</string>
+    <string name="Начать">Начать</string>
+    <string name="first_string">В данном приложении вы можете учиться))</string>
+    <string name="second_string">В данном приложении вы можете обновлять</string>
+    <string name="third_string">В данном приложении удалять</string>
+    <string name="four_string">Спасибо что вы с нами))</string>
+</resources>

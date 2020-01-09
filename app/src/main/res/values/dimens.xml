@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="norm_dp">60dp</dimen>
+    <dimen name="text_size">20sp</dimen>
+    <dimen name="width">300dp</dimen>
+    <dimen name="linear_height">420dp</dimen>
+    <dimen name="start_margin">60dp</dimen>
+    <dimen name="top_margin">200dp</dimen>
+    <dimen name="image_width">300dp</dimen>
+    <dimen name="image_height">300dp</dimen>
+    <dimen name="btn_margin_start">50dp</dimen>
+    <dimen name="image_margin_top">130dp</dimen>
+    <dimen name="image_margin_start">50dp</dimen>
+    <dimen name="txt_v_height">70dp</dimen>
+    <dimen name="txt_size">20sp</dimen>
+    <dimen name="btn_margin_top">30dp</dimen>
+</resources>
