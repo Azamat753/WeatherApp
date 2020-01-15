@@ -1,7 +1,6 @@
 package com.example.weatherapp.ui.onboard;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.weatherapp.R;
-import com.example.weatherapp.data.entity.OnBoardEntity;
 
 import java.util.ArrayList;
 

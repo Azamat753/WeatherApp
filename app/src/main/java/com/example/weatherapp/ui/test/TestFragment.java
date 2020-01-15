@@ -15,7 +15,7 @@ public class TestFragment extends BaseFragment {
         return R.layout.activity_main;
     }
 
-    @OnClick(R.id.tvTvMain)
+
     public void textClicked(TextView textView){
         textView.setText("asdsadsad");
     }

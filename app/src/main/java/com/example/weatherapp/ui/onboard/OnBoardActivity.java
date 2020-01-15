@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.weatherapp.R;
-import com.example.weatherapp.data.entity.OnBoardEntity;
 import com.example.weatherapp.ui.base.BaseActivity;
 import com.example.weatherapp.ui.main.MainActivity;
 import com.google.android.material.tabs.TabLayout;
