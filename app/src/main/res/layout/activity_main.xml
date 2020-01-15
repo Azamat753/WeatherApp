@@ -97,6 +97,7 @@
             app:layout_constraintTop_toTopOf="parent" />
         <Button
             android:id="@+id/search"
+            android:background="@drawable/circle"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/right_side"
