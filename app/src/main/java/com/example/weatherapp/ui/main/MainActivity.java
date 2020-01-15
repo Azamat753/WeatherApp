@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.weatherapp.R;
@@ -19,6 +23,7 @@ import com.example.weatherapp.ui.base.BaseActivity;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -36,8 +41,11 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.month_year)
     TextView month_year;
 
-    @BindView(R.id.country_txt)
-    EditText country;
+    @BindView(R.id.country_spinner)
+    Spinner country;
+
+    @BindView(R.id.country_tv)
+    TextView country_tv;
 
     @BindView(R.id.tv_now)
     TextView tv_now;
@@ -104,6 +112,9 @@ public class MainActivity extends BaseActivity {
   @BindView(R.id.weather_image)
     ImageView weatherImage;
 
+
+
+
     @Override
     protected int getViewLayout() {
         return R.layout.activity_main;
@@ -116,10 +127,9 @@ public class MainActivity extends BaseActivity {
         fetchCurrentWeather("Bishkek");
         getDay();
         getMonth();
-        //foreCastDate()
-
-
+        addInSpinner();
     }
+
 
 
     public static void start(Context context) {
@@ -159,9 +169,6 @@ public class MainActivity extends BaseActivity {
         cloundliness_procent.setText(weather.getClouds().getAll().toString());
         sunrise_number.setText(getData(weather.getSys().getSunrise()));
         sunset_number.setText(getData(weather.getSys().getSunset()));
-
-
-
     }
 
     public void getMonth() {
@@ -180,7 +187,8 @@ public class MainActivity extends BaseActivity {
 
 
     public void initListeners() {
-        search.setOnClickListener(v -> fetchCurrentWeather(country.getText().toString()));
+       search.setOnClickListener(v -> fetchCurrentWeather(country_tv.getText().toString()));
+
     }
 
     public static String getData(Integer sunrise) {
@@ -189,6 +197,35 @@ public class MainActivity extends BaseActivity {
         format.setTimeZone(TimeZone.getTimeZone("GMT+06:00"));
         return format.format(date);
     }
+    public void addInSpinner(){
 
+        Spinner spinner = findViewById(R.id.country_spinner);
 
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("Бишкек");
+        arrayList.add("Чуй");
+        arrayList.add("Нарын");
+        arrayList.add("Талас");
+        arrayList.add("Баткен");
+        arrayList.add("Ош");
+        arrayList.add("Джалал-Абад");
+        arrayList.add("Москва");
+        arrayList.add("Лондон");
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, arrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String tutorialsName = parent.getItemAtPosition(position).toString();
+                Toast.makeText(parent.getContext(), "Выбран город: " + tutorialsName,Toast.LENGTH_LONG).show();
+                country_tv.setText(tutorialsName);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
 }

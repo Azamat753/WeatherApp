@@ -72,19 +72,29 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <EditText
-            android:id="@+id/country_txt"
-            android:layout_width="@dimen/width"
+        <Spinner
+            android:id="@+id/country_spinner"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="@string/california_us"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/number_size"
+            android:layout_marginRight="100dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/country_tv"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="100dp"
+            android:textSize="@dimen/number_size"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <Button
             android:id="@+id/search"
             android:layout_width="50dp"
