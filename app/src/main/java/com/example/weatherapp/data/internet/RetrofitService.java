@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 public interface RetrofitService {
 
 
-    @GET("data/2.5/weather")
+    @GET("weather")
     Call<CurrentWeather> fetchtCurrentWeather(@Query("q")String city,
                                               @Query("appid")String appid,
                                               @Query("units")String units);

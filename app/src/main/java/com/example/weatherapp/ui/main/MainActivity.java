@@ -1,8 +1,13 @@
 package com.example.weatherapp.ui.main;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +28,11 @@ import com.example.weatherapp.data.entity.CurrentWeather;
 import com.example.weatherapp.data.entity.ForecastEntity;
 import com.example.weatherapp.data.internet.RetrofitBuilder;
 import com.example.weatherapp.ui.base.BaseActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.security.Permission;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +47,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
+
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private final int REQUEST_CODE = 1001;
+
+    String[] permissions = new String[2];
+
+
     @BindView(R.id.day)
     TextView day;
 
@@ -114,23 +133,10 @@ public class MainActivity extends BaseActivity {
     ImageView weatherImage;
 
 
-//    @BindView(R.id.day_item)
-//    TextView item_day_tv;
-
-//    @BindView(R.id.tvMaxTemp_item)
-//    TextView item_tvMaxTemp_tv;
-//
-//    @BindView(R.id.tvMinTemp_item)
-//    TextView item_tvMinTemp_tv;
-//
-//    @BindView(R.id.image_item)
-//    ImageView item_image_tv;
-
     public static String WEATHER_DATA = "weather";
 
     private RecyclerView recyclerView;
     private ForecastAdapter adapter;
-
 
 
     @Override
@@ -142,20 +148,64 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initViews();
-      //  initRecycler();
+        //  initRecycler();
         initListeners();
-        // getData();
+      //   getData();
         fetchCurrentWeather("Bishkek");
         getDay();
         getMonth();
         addInSpinner();
-        fetchForcastWeather();
+        fetchForcastWeather("Bishkek");
 //        sendInDayRecycler();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        permissions[0] = Manifest.permission.ACCESS_FINE_LOCATION;
+        permissions[1] = Manifest.permission.ACCESS_COARSE_LOCATION;
+
+        if (ContextCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            getLastLocation();
+
+
+        } else {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions, REQUEST_CODE);
+            }
+
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE) {
+            for (int results : grantResults) {
+                if (results == PackageManager.PERMISSION_GRANTED) {
+                    getLastLocation();
+                }
+
+            }
+        }
+    }
+
+    void getLastLocation() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+               // if (location!=null)
+                //search.setText(String.valueOf(location.getLatitude()));
+            }
+        });
     }
 
     public static void start(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
     }
+
     private void fetchCurrentWeather(String city) {
         RetrofitBuilder.getService().fetchtCurrentWeather(city,
                 "4d63c1acf9a085448b23971128e5eddd", "metric").enqueue(new Callback<CurrentWeather>() {
@@ -170,6 +220,7 @@ public class MainActivity extends BaseActivity {
                             .into(weatherImage);
                 }
             }
+
             @Override
             public void onFailure(Call<CurrentWeather> call, Throwable t) {
 
@@ -208,8 +259,17 @@ public class MainActivity extends BaseActivity {
 
 
     public void initListeners() {
-        search.setOnClickListener(v -> fetchCurrentWeather(country_tv.getText().toString()));
+        search.setOnClickListener(v ->
+                fetchCurrentWeather(country_tv.getText().toString())
 
+             );
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchForcastWeather(country_tv.getText().toString());
+            }
+        });
+        Log.e("-------","--------");
     }
 
     public static String getData(Integer sunrise) {
@@ -263,11 +323,11 @@ public class MainActivity extends BaseActivity {
         recyclerView = findViewById(R.id.recyclerView);
     }
 
-//    private void getData() {
-//        Intent intent = getIntent();
-//        ForecastEntity forecastEntity = (ForecastEntity) intent.getSerializableExtra(WEATHER_DATA);
-//        adapter.update(forecastEntity.getForecastWeatherList());
-//    }
+    private void getData() {
+        Intent intent = getIntent();
+        ForecastEntity forecastEntity = (ForecastEntity) intent.getSerializableExtra(WEATHER_DATA);
+        adapter.update(forecastEntity.getForecastWeatherList());
+   }
 
 //    public void sendInDayRecycler() {
 //        Date currentDate = new Date();
@@ -282,10 +342,10 @@ public class MainActivity extends BaseActivity {
 //        //}
 
 
-  //  }
-    private void fetchForcastWeather() {
+    //  }
+    private void fetchForcastWeather(String s) {
         RetrofitBuilder.getService()
-                .frcstWeather("Bishkek","metric","4d63c1acf9a085448b23971128e5eddd")
+                .frcstWeather(s, "metric", "4d63c1acf9a085448b23971128e5eddd")
                 .enqueue(new Callback<ForecastEntity>() {
                     @Override
                     public void onResponse(Call<ForecastEntity> call, Response<ForecastEntity> response) {
@@ -299,5 +359,7 @@ public class MainActivity extends BaseActivity {
                         Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
+
 }
