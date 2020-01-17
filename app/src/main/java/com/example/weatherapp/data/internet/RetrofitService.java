@@ -1,6 +1,7 @@
 package com.example.weatherapp.data.internet;
 
 import com.example.weatherapp.data.entity.CurrentWeather;
+import com.example.weatherapp.data.entity.ForecastEntity;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,4 +17,10 @@ public interface RetrofitService {
 
 
 
+    @GET("forecast")
+    Call<ForecastEntity> frcstWeather(@Query("q") String city,
+                                      @Query("units")String units,
+                                      @Query("appid") String appID);
 }
+
+

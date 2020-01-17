@@ -23,6 +23,17 @@
             app:lottie_loop="true" />
 
 
+        <ImageView
+            android:id="@+id/weather_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="180dp"
+            android:background="@drawable/little_cloud"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/day"
             android:layout_width="@dimen/day_width"
@@ -108,22 +119,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp">
-
-        <ImageView
-            android:id="@+id/weather_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/left_side"
-
-            android:background="@drawable/little_cloud"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -196,6 +191,7 @@
             android:layout_marginRight="@dimen/max_margin_right"
             android:text="@string/_24"
             android:textSize="@dimen/txt_size"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@+id/today_number_txt"
             app:layout_constraintRight_toRightOf="parent"
@@ -209,9 +205,10 @@
 
         <TextView
             android:id="@+id/little_cloud"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
             android:layout_marginRight="@dimen/left_side"
+            android:textColor="@android:color/white"
             android:text="@string/little_cloud"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -223,7 +220,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/max_margin_left"
-            android:text="Max"
+            android:text="@string/max"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -235,6 +233,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/min_margin_left"
             android:text="@string/min"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -242,6 +241,24 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_forecast"/>
+
+    </LinearLayout>
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -252,7 +269,7 @@
             android:id="@+id/tv_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/left_side"
+            android:layout_marginRight="@dimen/wind_margin"
             android:text="@string/wind"
             android:textColor="@android:color/white"
             android:textSize="@dimen/txt_size"
@@ -335,7 +352,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/right_side"
-            android:text="@string/cloudliness"
+            android:text="@string/cloudiness"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"

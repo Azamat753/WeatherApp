@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="wind">Ветер</string>
+<string name="now">Сейчас</string>
+<string name="today">Сегодня</string>
+<string name="pressure">Давление</string>
+<string name="humidity">Влажность</string>
+<string name="cloudiness">Облачность</string>
+<string name="sunrise">Восход солнца</string>
+<string name="sunset">Закат</string>
+<string name="min">Минимум</string>
+<string name="max">Максимум</string>
+<string name="little_cloud">Маленькие облака</string>
+<string name="celcium">%s Цельсий</string>
+
+</resources>

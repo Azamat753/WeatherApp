@@ -9,7 +9,7 @@
     <string name="second_string">Узнавать текущие курсы валют</string>
     <string name="third_string">В данном приложении удалять</string>
     <string name="four_string">Спасибо что вы с нами))</string>
-    <string name="cloudliness">Cloudliness</string>
+    <string name="cloudiness">Cloudiness</string>
     <string name="humidity">Humidity</string>
     <string name="now">Now</string>
     <string name="sunset">Sunset</string>
@@ -30,4 +30,6 @@
     <string name="_28">28</string>
     <string name="_24">24</string>
     <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="celcium">%s Celsius</string>
 </resources>

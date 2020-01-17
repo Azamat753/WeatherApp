@@ -2,30 +2,31 @@ package com.example.weatherapp.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.weatherapp.R;
 import com.example.weatherapp.data.entity.CurrentWeather;
+import com.example.weatherapp.data.entity.ForecastEntity;
 import com.example.weatherapp.data.internet.RetrofitBuilder;
 import com.example.weatherapp.ui.base.BaseActivity;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -109,9 +110,26 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.search)
     Button search;
 
-  @BindView(R.id.weather_image)
+    @BindView(R.id.weather_image)
     ImageView weatherImage;
 
+
+//    @BindView(R.id.day_item)
+//    TextView item_day_tv;
+
+//    @BindView(R.id.tvMaxTemp_item)
+//    TextView item_tvMaxTemp_tv;
+//
+//    @BindView(R.id.tvMinTemp_item)
+//    TextView item_tvMinTemp_tv;
+//
+//    @BindView(R.id.image_item)
+//    ImageView item_image_tv;
+
+    public static String WEATHER_DATA = "weather";
+
+    private RecyclerView recyclerView;
+    private ForecastAdapter adapter;
 
 
 
@@ -123,19 +141,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initViews();
+      //  initRecycler();
         initListeners();
+        // getData();
         fetchCurrentWeather("Bishkek");
         getDay();
         getMonth();
         addInSpinner();
+        fetchForcastWeather();
+//        sendInDayRecycler();
     }
-
-
 
     public static void start(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
     }
-
     private void fetchCurrentWeather(String city) {
         RetrofitBuilder.getService().fetchtCurrentWeather(city,
                 "4d63c1acf9a085448b23971128e5eddd", "metric").enqueue(new Callback<CurrentWeather>() {
@@ -144,14 +164,12 @@ public class MainActivity extends BaseActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     fillViews(response.body());
 
-
                     Glide.with(getApplicationContext())
                             .load("http://openweathermap.org/img/wn/"
                                     + response.body().getWeather().get(0).getIcon() + "@2x.png")
                             .into(weatherImage);
                 }
             }
-
             @Override
             public void onFailure(Call<CurrentWeather> call, Throwable t) {
 
@@ -160,6 +178,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void fillViews(CurrentWeather weather) {
+
         now_number.setText(weather.getMain().getTemp().toString());
         today_number.setText(weather.getMain().getTempMax().toString());
         min_number.setText(weather.getMain().getTempMin().toString());
@@ -169,6 +188,8 @@ public class MainActivity extends BaseActivity {
         cloundliness_procent.setText(weather.getClouds().getAll().toString());
         sunrise_number.setText(getData(weather.getSys().getSunrise()));
         sunset_number.setText(getData(weather.getSys().getSunset()));
+
+
     }
 
     public void getMonth() {
@@ -187,7 +208,7 @@ public class MainActivity extends BaseActivity {
 
 
     public void initListeners() {
-       search.setOnClickListener(v -> fetchCurrentWeather(country_tv.getText().toString()));
+        search.setOnClickListener(v -> fetchCurrentWeather(country_tv.getText().toString()));
 
     }
 
@@ -197,7 +218,8 @@ public class MainActivity extends BaseActivity {
         format.setTimeZone(TimeZone.getTimeZone("GMT+06:00"));
         return format.format(date);
     }
-    public void addInSpinner(){
+
+    public void addInSpinner() {
 
         Spinner spinner = findViewById(R.id.country_spinner);
 
@@ -220,12 +242,62 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String tutorialsName = parent.getItemAtPosition(position).toString();
-                Toast.makeText(parent.getContext(), "Выбран город: " + tutorialsName,Toast.LENGTH_LONG).show();
+                Toast.makeText(parent.getContext(), "Выбран город: " + tutorialsName, Toast.LENGTH_LONG).show();
                 country_tv.setText(tutorialsName);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void initRecycler(ArrayList<CurrentWeather> list) {
+        recyclerView = findViewById(R.id.recyclerView);
+        adapter = new ForecastAdapter();
+        recyclerView.setAdapter(adapter);
+        adapter.update(list);
+    }
+
+    public void initViews() {
+        recyclerView = findViewById(R.id.recyclerView);
+    }
+
+//    private void getData() {
+//        Intent intent = getIntent();
+//        ForecastEntity forecastEntity = (ForecastEntity) intent.getSerializableExtra(WEATHER_DATA);
+//        adapter.update(forecastEntity.getForecastWeatherList());
+//    }
+
+//    public void sendInDayRecycler() {
+//        Date currentDate = new Date();
+//        DateFormat dateFormat = new SimpleDateFormat("dd", Locale.getDefault());
+//        String dayData = dateFormat.format(currentDate);
+//        //  item_day_tv.setText(dayData);
+////    }
+//
+//        //  public void sendTempInRecycler(CurrentWeather weather) {
+//        //    item_tvMaxTemp_tv.setText(weather.getMain().getTempMax().toString());
+//        //   item_tvMinTemp_tv.setText(weather.getMain().getTempMin().toString());
+//        //}
+
+
+  //  }
+    private void fetchForcastWeather() {
+        RetrofitBuilder.getService()
+                .frcstWeather("Bishkek","metric","4d63c1acf9a085448b23971128e5eddd")
+                .enqueue(new Callback<ForecastEntity>() {
+                    @Override
+                    public void onResponse(Call<ForecastEntity> call, Response<ForecastEntity> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            initRecycler(response.body().getForecastWeatherList());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ForecastEntity> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
