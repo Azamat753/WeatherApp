@@ -8,6 +8,9 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -28,6 +32,7 @@ import com.example.weatherapp.data.entity.CurrentWeather;
 import com.example.weatherapp.data.entity.ForecastEntity;
 import com.example.weatherapp.data.internet.RetrofitBuilder;
 import com.example.weatherapp.ui.base.BaseActivity;
+import com.example.weatherapp.ui.base.MyForegroundService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,11 +45,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.example.weatherapp.ui.base.MyForegroundService.IS_SERVICE_ACTIVE;
 
 public class MainActivity extends BaseActivity {
 
@@ -133,11 +141,23 @@ public class MainActivity extends BaseActivity {
     ImageView weatherImage;
 
 
+
+    @BindView(R.id.notification_btn)
+    Button not_ch;
+
+    @BindView(R.id.btnStart)
+    Button start;
+
+    @BindView(R.id.btnStop)
+    Button stop;
+
+//@BindView(R.id.toolbar_main)
+  //  Toolbar toolbarMain;
+
     public static String WEATHER_DATA = "weather";
 
     private RecyclerView recyclerView;
     private ForecastAdapter adapter;
-
 
     @Override
     protected int getViewLayout() {
@@ -147,16 +167,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setSupportActionBar(toolbarMain);
         initViews();
-        //  initRecycler();
         initListeners();
-      //   getData();
         fetchCurrentWeather("Bishkek");
         getDay();
         getMonth();
         addInSpinner();
         fetchForcastWeather("Bishkek");
-//        sendInDayRecycler();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -178,6 +196,9 @@ public class MainActivity extends BaseActivity {
         }
 
     }
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -205,6 +226,7 @@ public class MainActivity extends BaseActivity {
     public static void start(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
     }
+
 
     private void fetchCurrentWeather(String city) {
         RetrofitBuilder.getService().fetchtCurrentWeather(city,
@@ -263,13 +285,11 @@ public class MainActivity extends BaseActivity {
                 fetchCurrentWeather(country_tv.getText().toString())
 
              );
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fetchForcastWeather(country_tv.getText().toString());
-            }
-        });
+        search.setOnClickListener(v -> fetchForcastWeather(country_tv.getText().toString()));
         Log.e("-------","--------");
+
+
+        not_ch.setOnClickListener(v -> startActivity(new Intent(MainActivity.this,NotificationActivity.class)));
     }
 
     public static String getData(Integer sunrise) {
@@ -308,6 +328,8 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(parent.getContext(), "Выберите город: " , Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -329,20 +351,6 @@ public class MainActivity extends BaseActivity {
         adapter.update(forecastEntity.getForecastWeatherList());
    }
 
-//    public void sendInDayRecycler() {
-//        Date currentDate = new Date();
-//        DateFormat dateFormat = new SimpleDateFormat("dd", Locale.getDefault());
-//        String dayData = dateFormat.format(currentDate);
-//        //  item_day_tv.setText(dayData);
-////    }
-//
-//        //  public void sendTempInRecycler(CurrentWeather weather) {
-//        //    item_tvMaxTemp_tv.setText(weather.getMain().getTempMax().toString());
-//        //   item_tvMinTemp_tv.setText(weather.getMain().getTempMin().toString());
-//        //}
-
-
-    //  }
     private void fetchForcastWeather(String s) {
         RetrofitBuilder.getService()
                 .frcstWeather(s, "metric", "4d63c1acf9a085448b23971128e5eddd")
@@ -359,7 +367,53 @@ public class MainActivity extends BaseActivity {
                         Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+        private void actionService(boolean isActivated) {
+            Intent intent = new Intent(this, MyForegroundService.class);
+            intent.putExtra(IS_SERVICE_ACTIVE, isActivated);
+            startService(intent);
+        }
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btnStart:
+                    actionService(true);
+                    start.setVisibility(View.GONE);
+                    stop.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.btnStop:
+                    actionService(false);
+                    stop.setVisibility(View.GONE);
+                    start.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_service,menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()){
+//            case R.id.service_start:
+//                actionService(true);
+//                    break;
+//            case R.id.service_stop:
+//                actionService(false);
+//                    break;
+//        }
+//        return super.onOptionsItemSelected(item);
+    
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this, "Удачного дня \uD83D\uDE0A ", Toast.LENGTH_SHORT).show();
 
     }
+
 
 }

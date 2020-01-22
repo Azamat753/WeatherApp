@@ -23,19 +23,19 @@
 
     <TextView
         android:id="@+id/tvMaxTemp_item"
-        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
-        android:textColor="@android:color/white"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
+        android:textColor="@android:color/white"
         tools:text="-3C" />
 
     <TextView
         android:id="@+id/tvMinTemp_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:gravity="center"
+        android:textColor="@android:color/white"
         tools:text="18C" />
 
 

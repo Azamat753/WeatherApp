@@ -2,7 +2,7 @@
     <string name="app_name">WeatherApp</string>
     <string name="hello">Hello World!</string>
     <string name="skip">skip</string>
-    <string name="next" >Next</string>
+    <string name="next">Next</string>
     <string name="Далее">Далее</string>
     <string name="Начать">Начать</string>
     <string name="first_string">В данном приложении вы можете узнавать данные о погоде</string>

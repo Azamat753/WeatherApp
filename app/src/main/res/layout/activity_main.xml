@@ -9,6 +9,21 @@
     tools:context=".ui.main.MainActivity">
 
 
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar_main"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:paddingLeft="10dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    </LinearLayout>-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_constaint_height">
@@ -117,6 +132,22 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        <Button
+            android:id="@+id/notification_btn"
+            android:background="@drawable/circle"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="140dp"
+            android:text="s"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -258,7 +289,30 @@
 
     </LinearLayout>
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/right_side"
+        android:onClick="onClick"
+        android:background="@drawable/circle_green"
+        android:text="start"/>
+
+
+    <Button
+        android:id="@+id/btnStop"
+        android:visibility="gone"
+        android:background="@drawable/circle_red"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:onClick="onClick"
+        android:text="stop"/>
+
+</LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
