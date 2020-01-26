@@ -29,10 +29,8 @@ public class NotificationHelper {
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .build()
-                ;
+                .build();
     }
-
     public static void createNotification(Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(1, getNotification(context));

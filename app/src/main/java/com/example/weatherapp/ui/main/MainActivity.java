@@ -151,9 +151,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.btnStop)
     Button stop;
 
-//@BindView(R.id.toolbar_main)
-  //  Toolbar toolbarMain;
-
     public static String WEATHER_DATA = "weather";
 
     private RecyclerView recyclerView;
@@ -163,11 +160,9 @@ public class MainActivity extends BaseActivity {
     protected int getViewLayout() {
         return R.layout.activity_main;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setSupportActionBar(toolbarMain);
         initViews();
         initListeners();
         fetchCurrentWeather("Bishkek");
@@ -191,15 +186,9 @@ public class MainActivity extends BaseActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(permissions, REQUEST_CODE);
             }
-
-
         }
 
     }
-
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -226,16 +215,12 @@ public class MainActivity extends BaseActivity {
     public static void start(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
     }
-
-
     private void fetchCurrentWeather(String city) {
-        RetrofitBuilder.getService().fetchtCurrentWeather(city,
-                "4d63c1acf9a085448b23971128e5eddd", "metric").enqueue(new Callback<CurrentWeather>() {
+        RetrofitBuilder.getService().fetchtCurrentWeather(city, "4d63c1acf9a085448b23971128e5eddd", "metric").enqueue(new Callback<CurrentWeather>() {
             @Override
             public void onResponse(Call<CurrentWeather> call, Response<CurrentWeather> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     fillViews(response.body());
-
                     Glide.with(getApplicationContext())
                             .load("http://openweathermap.org/img/wn/"
                                     + response.body().getWeather().get(0).getIcon() + "@2x.png")

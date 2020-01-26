@@ -43,7 +43,6 @@ Button start,stop;
     protected int getLayoutId() {
         return R.layout.activity_notification;
     }
-
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);

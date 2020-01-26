@@ -21,7 +21,6 @@ import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin;
 
@@ -40,25 +39,16 @@ public abstract class BaseMapActivity extends BaseMap implements PermissionsList
         super.onCreate(savedInstanceState);
         initViews();
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull final MapboxMap mapboxMap) {
-                mapboxMap.setStyle(Style.SATELLITE_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        map = mapboxMap;
-                        BuildingPlugin buildingPlugin = new BuildingPlugin(mapView, map, style);
-                        buildingPlugin.setVisibility(true);
+        mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.SATELLITE_STREETS, style -> {
+            map = mapboxMap;
+            BuildingPlugin buildingPlugin = new BuildingPlugin(mapView, map, style);
+            buildingPlugin.setVisibility(true);
 
-                        enableLocationComponent(style);
+            enableLocationComponent(style);
 
-                    }
-                });
-            }
-        });
-
-
+        }));
     }
+
 
     private void enableLocationComponent(Style style) {
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
@@ -67,15 +57,13 @@ public abstract class BaseMapActivity extends BaseMap implements PermissionsList
                     .accuracyAlpha(.6f)
                     .accuracyColor(Color.GREEN)
                     .build();
-
             locationComponent = map.getLocationComponent();
-
             LocationComponentActivationOptions locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(this, style)
                             .locationComponentOptions(customLocationComponentOptions)
                             .build();
 
-            // Activate with options
+                     // Activate with options
             locationComponent.activateLocationComponent(locationComponentActivationOptions);
 
             // Enable to make component visible
@@ -158,12 +146,7 @@ public abstract class BaseMapActivity extends BaseMap implements PermissionsList
     @Override
     public void onPermissionResult(boolean granted) {
         if (granted) {
-            map.getStyle(new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    enableLocationComponent(style);
-                }
-            });
+            map.getStyle(style -> enableLocationComponent(style));
         }
     }
 }
