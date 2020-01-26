@@ -14,8 +14,10 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.weatherapp.R;
 import com.example.weatherapp.ui.main.MainActivity;
 
-public class NotificationHelper {
+import java.util.ArrayList;
 
+public class NotificationHelper {
+    ArrayList<Integer> listLocation;
     private static final String NOTIFICATION_CHANNEL = "channel_notification";
 
     public static Notification getNotification(Context context) {
@@ -31,6 +33,10 @@ public class NotificationHelper {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .build();
     }
+    public void getLocationData(){
+
+    }
+
     public static void createNotification(Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(1, getNotification(context));

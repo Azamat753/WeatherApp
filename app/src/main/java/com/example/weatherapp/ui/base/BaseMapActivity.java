@@ -1,13 +1,20 @@
 package com.example.weatherapp.ui.base;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.weatherapp.R;
+import com.example.weatherapp.data.NotificationHelper;
+import com.example.weatherapp.data.internet.SendLocation;
+import com.example.weatherapp.ui.main.MainActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -24,15 +31,18 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseMapActivity extends BaseMap implements PermissionsListener {
+public abstract class BaseMapActivity extends BaseMap implements PermissionsListener, MapboxMap.OnMapClickListener {
 
     protected MapView mapView;
     protected MapboxMap map;
     private LocationComponent locationComponent;
     private PermissionsManager permissionsManager;
-
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    ArrayList<Integer> locations=new ArrayList<>();
+SendLocation sendLocation;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Mapbox.getInstance(this, "pk.eyJ1Ijoicm9qc2FzaGEiLCJhIjoiY2p6MTB6ZjI2MGd4aTNlbXl4Mzd5YTV1dSJ9.uf5mvNIAZZEg4UpGGd5w7Q");
@@ -41,17 +51,46 @@ public abstract class BaseMapActivity extends BaseMap implements PermissionsList
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.SATELLITE_STREETS, style -> {
             map = mapboxMap;
+            mapboxMap.addOnMapClickListener( this);
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            cameraUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
+
+                        }
+                    });
             BuildingPlugin buildingPlugin = new BuildingPlugin(mapView, map, style);
             buildingPlugin.setVisibility(true);
 
             enableLocationComponent(style);
 
         }));
-    }
 
+        fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
+
+    }
+    private void cameraUpdate(LatLng latLng) {
+        CameraPosition position = new CameraPosition.Builder()
+                .target(latLng) // Sets the new camera position
+                .zoom(17) // Sets the zoom
+                .bearing(180) // Rotate the camera
+                .tilt(30) // Set the camera tilt
+                .build(); // Creates a CameraPosition from the builder
+
+        map.animateCamera(CameraUpdateFactory
+                .newCameraPosition(position), 7000);
+    }
 
     private void enableLocationComponent(Style style) {
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(BaseMapActivity.this, location -> {
+                if (location != null) {
+                    locations.add((int) location.getLatitude());
+                    locations.add((int) location.getLongitude());
+
+                }
+            });
+
             LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(this)
                     .elevation(5)
                     .accuracyAlpha(.6f)
@@ -148,6 +187,7 @@ public abstract class BaseMapActivity extends BaseMap implements PermissionsList
         if (granted) {
             map.getStyle(style -> enableLocationComponent(style));
         }
+     
     }
 }
 

@@ -19,7 +19,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.main.NotificationActivity"></activity>
+        <activity android:name=".ui.main.NotificationActivity" />
         <activity
             android:name=".ui.main.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
