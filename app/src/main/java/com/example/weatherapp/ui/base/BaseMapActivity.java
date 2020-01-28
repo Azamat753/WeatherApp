@@ -41,8 +41,10 @@ public abstract class BaseMapActivity extends BaseMap implements PermissionsList
     private LocationComponent locationComponent;
     private PermissionsManager permissionsManager;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    ArrayList<Integer> locations=new ArrayList<>();
-SendLocation sendLocation;
+    ArrayList<Double> locations = new ArrayList<>();
+    NotificationHelper notificationHelper;
+    SendLocation sendLocation;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Mapbox.getInstance(this, "pk.eyJ1Ijoicm9qc2FzaGEiLCJhIjoiY2p6MTB6ZjI2MGd4aTNlbXl4Mzd5YTV1dSJ9.uf5mvNIAZZEg4UpGGd5w7Q");
@@ -51,12 +53,11 @@ SendLocation sendLocation;
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.SATELLITE_STREETS, style -> {
             map = mapboxMap;
-            mapboxMap.addOnMapClickListener( this);
+            mapboxMap.addOnMapClickListener(this);
             fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
                             cameraUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
-
                         }
                     });
             BuildingPlugin buildingPlugin = new BuildingPlugin(mapView, map, style);
@@ -66,9 +67,9 @@ SendLocation sendLocation;
 
         }));
 
-        fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
-
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
+
     private void cameraUpdate(LatLng latLng) {
         CameraPosition position = new CameraPosition.Builder()
                 .target(latLng) // Sets the new camera position
@@ -76,7 +77,6 @@ SendLocation sendLocation;
                 .bearing(180) // Rotate the camera
                 .tilt(30) // Set the camera tilt
                 .build(); // Creates a CameraPosition from the builder
-
         map.animateCamera(CameraUpdateFactory
                 .newCameraPosition(position), 7000);
     }
@@ -85,9 +85,10 @@ SendLocation sendLocation;
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(BaseMapActivity.this, location -> {
                 if (location != null) {
-                    locations.add((int) location.getLatitude());
-                    locations.add((int) location.getLongitude());
-
+                    locations.add(location.getLatitude());
+                    locations.add(location.getLongitude());
+                    Log.e("TAG", "enableLocationComponent: " + location.getLatitude() + " - " + location.getLongitude());
+                    notificationHelper = new NotificationHelper(location.getLongitude(), location.getLatitude());
                 }
             });
 
@@ -102,7 +103,7 @@ SendLocation sendLocation;
                             .locationComponentOptions(customLocationComponentOptions)
                             .build();
 
-                     // Activate with options
+            // Activate with options
             locationComponent.activateLocationComponent(locationComponentActivationOptions);
 
             // Enable to make component visible
@@ -111,11 +112,11 @@ SendLocation sendLocation;
             locationComponent.setCameraMode(CameraMode.TRACKING);
 
             locationComponent.setRenderMode(RenderMode.COMPASS);
-            Location location= locationComponent.getLastKnownLocation();
-            if (location!=null) {
+            Location location = locationComponent.getLastKnownLocation();
+            if (location != null) {
                 CameraPosition position = new CameraPosition.Builder().target(new LatLng(location.getLatitude()
-                        ,location.getLongitude())).zoom(12).build();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(position),7000);
+                        , location.getLongitude())).zoom(12).build();
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
 
             }
 
@@ -187,7 +188,7 @@ SendLocation sendLocation;
         if (granted) {
             map.getStyle(style -> enableLocationComponent(style));
         }
-     
+
     }
 }
 

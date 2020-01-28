@@ -18,7 +18,6 @@ public class MyForegroundService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getBooleanExtra(IS_SERVICE_ACTIVE, false)){
